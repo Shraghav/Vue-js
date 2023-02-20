@@ -1,0 +1,22 @@
+.box1{
+    background-color: brown;
+    height: 200px;
+    width: 200px;
+}
+
+.box2{
+    background-color: rgb(17, 251, 1);
+    height: 200px;
+    width: 200px;
+}
+[v-cloak]{
+    display: none;
+}
+.change{
+    height: 20px;
+    width: 50px;
+}
+input{
+    display: block;
+    margin: 4px;
+}
