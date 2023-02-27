@@ -1,0 +1,97 @@
+<script setup>
+
+import { ref, onMounted, computed, watch } from 'vue'
+const todo = ref([])
+const name = ref('')
+
+const content = ref('')
+const category = ref(null)
+
+const asc = computed(() => todo.value.sort((an, bn) => {
+  return bn.createdAt - an.createdAt
+}))
+
+const addtodo = () => {
+  if (content.value.trim() === '' || category.value === null) {
+    return
+  }
+  todo.value.push({
+    content: content.value,
+    category: category.value,
+    done: false,
+    createdAt: new Date().getTime()
+  })
+}
+
+watch(name, (newVal) => {
+  localStorage.setItem('name', newVal)
+}),
+
+watch(todo, newVal => {
+  localStorage.setItem('todo', JSON.stringify(newVal))
+},
+  {
+  deep: true
+})
+
+
+onMounted(() => {
+  name.value = localStorage.getItem('name') || ''
+  todo.value= JSON.parse(localStorage.getItem('todo')) || []
+})
+</script>
+
+<template>
+  <main class="app">
+    <section class="greeting">
+      <h2 class="title">
+        What's up DUDE, <input type="text" placeholder="Name please" v-model="name" />
+      </h2>
+    </section>
+
+    <section class="create-todo">
+      <h2>
+        CREATE A TO DO
+      </h2>
+
+      <form @submit.prevent="addtodo">
+        <h4>What is on your list</h4>
+
+        <input type="text" placeholder="anything you wish to do" v-model="content" />
+
+        <h4>Pick a category</h4>
+
+        <div class="options">
+          <label>
+            <input type="radio" name="category" value="business" v-model="category" />
+            <span class="bubble business"></span>
+            <div>Business</div>
+          </label>
+
+          <label>
+            <input type="radio" name="category" value="personal" v-model="category" />
+            <span class="bubble personal"></span>
+            <div>Personal</div>
+          </label>
+
+        </div>
+
+        <input type="submit" value="Add todo"/>
+      
+      </form>
+    </section>
+
+    <section class="todo_lsit">
+      <h3>TO DO LIST</h3>
+      <div class="list">
+        <div v-for="todo in asc" :class="`todo-item ${todo.done && 'done'}`" ></div>
+        <label>
+          <input type="checkbox" v-model="todo.done" />
+          <span :class="`bubble ${todo.category}`"></span>
+
+        </label>
+      </div>
+    </section>
+  </main>
+</template>
+
